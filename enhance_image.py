@@ -29,7 +29,7 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 image_path = "./original_image.webp"
 init_image = Image.open(image_path).convert("RGB")
 
-prompt = "Looking like a 25-year-old, wearing a tuxedo, with blonde hair, wearing a bowler hat, and smiling."
+prompt = "Looking like a 25-year-old, wearing a tuxedo, with blonde hair, wearing a bowler hat, and smiling. The face must stay the same."
 
 # pass prompt and image to pipeline
 image = pipeline(prompt, image=init_image).images[0]
