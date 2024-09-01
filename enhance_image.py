@@ -32,11 +32,11 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 image_path = "./original_image.webp"
 init_image = Image.open(image_path).convert("RGB")
 
-prompt = "With blonde hair, and smiling. Keep the same face"
+prompt = "With blonde hair, and smiling. Keep the same face."
 negative_prompt = "ugly, deformed, disfigured, poor details, bad anatomy"
 
 # pass prompt and image to pipeline
-image = pipeline(prompt, negative_prompt=negative_prompt, image=init_image, strength=0.05, guidance_scale=0.1).images[0]
+image = pipeline(prompt, negative_prompt=negative_prompt, image=init_image, strength=0.01, guidance_scale=1.0).images[0]
 
 # Resize the generated image to the enhanced image size so it can be compared
 image_resized = image.resize(
