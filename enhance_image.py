@@ -1,0 +1,36 @@
+from PIL import Image
+import torch
+from diffusers import AutoPipelineForImage2Image
+from diffusers.utils import make_image_grid
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# Set up your Hugging Face token
+HUGGING_FACE_TOKEN = os.getenv("HUGGING_FACE_TOKEN")
+
+# You can set the token globally for your session
+from huggingface_hub import login
+
+login(HUGGING_FACE_TOKEN)
+
+pipeline = AutoPipelineForImage2Image.from_pretrained(
+    "kandinsky-community/kandinsky-2-2-decoder", torch_dtype=torch.float16, use_safetensors=True
+)
+#offload the model to the GPU while the other pipeline components wait on the CPU
+pipeline.enable_model_cpu_offload()
+# remove following line if xFormers is not installed or you have PyTorch 2.0 or higher installed
+pipeline.enable_xformers_memory_efficient_attention()
+# boost your inference speed even more by wrapping your UNet with it
+pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=True)
+
+# Load local image
+image_path = "./original_image.webp"
+init_image = Image.open(image_path).convert("RGB")
+
+prompt = "Looking like a 25-year-old, wearing a tuxedo, with blonde hair, wearing a bowler hat, and smiling."
+
+# pass prompt and image to pipeline
+image = pipeline(prompt, image=init_image).images[0]
+make_image_grid([init_image, image], rows=1, cols=2)

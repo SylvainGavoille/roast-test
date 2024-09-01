@@ -1,16 +1,14 @@
 from PIL import Image
-from diffusers import StableDiffusionUpscalePipeline
+from diffusers import LDMSuperResolutionPipeline
 import torch
 
 # Clear CUDA memory
 torch.cuda.empty_cache()
 
 # Load model and scheduler
-model_id = "stabilityai/stable-diffusion-x4-upscaler"
-pipeline = StableDiffusionUpscalePipeline.from_pretrained(
-    model_id, revision="fp16", torch_dtype=torch.float16
-)
+model_id = "CompVis/ldm-super-resolution-4x-openimages"
 
+pipeline = LDMSuperResolutionPipeline.from_pretrained(model_id)
 # Move pipeline to CPU to reduce GPU memory usage (optional)
 pipeline = pipeline.to("cuda")
 
@@ -23,14 +21,18 @@ original_size = low_res_img.size
 
 # Reduce the image size before processing to save memory, otherwise the model may run out of memory on my machine
 low_res_img_resized = low_res_img.resize(
-    (low_res_img.width // 4, low_res_img.height // 4), Image.Resampling.LANCZOS
+    (low_res_img.width//5, low_res_img.height//5), Image.Resampling.LANCZOS
 )
-
+print("Original image size:", original_size)
 # Upscale the image (using the resized low-res image), the more inference steps, the better the quality
-upscaled_image = pipeline(prompt="a man", image=low_res_img_resized, num_inference_steps=200).images[0]
+upscaled_image = pipeline(image=low_res_img_resized, num_inference_steps=300, eta=1).images[0]
+print("Upscale image size:",upscaled_image.size)
 
-# Resize the upscaled image back to the original size
-upscaled_image_resized = upscaled_image.resize(original_size, Image.Resampling.LANCZOS)
-
+# Resize the generated image to the enhanced image size so it can be compared
+low_res_img_resized = low_res_img.resize(
+    (upscaled_image.width, upscaled_image.height), Image.Resampling.LANCZOS
+)
 # Save the upscaled and resized image as a .webp file
-upscaled_image_resized.save("upsampled_image.webp", format="WEBP")
+upscaled_image.save("upsampled_image.webp", format="WEBP")
+low_res_img_resized.save("generated_image_resized.webp", format="WEBP")
+
