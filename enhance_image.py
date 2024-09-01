@@ -35,7 +35,7 @@ init_image = Image.open(image_path).convert("RGB")
 prompt = "With blonde hair, and smiling. The face must stay the same."
 
 # pass prompt and image to pipeline
-image = pipeline(prompt, image=init_image, strength=0.1, guidance_scale=0.1).images[0]
+image = pipeline(prompt, image=init_image, strength=0.1, guidance_scale=0.0).images[0]
 # Save the upscaled and resized image as a .webp file
 image.save("featured_image.webp", format="WEBP")
 #make_image_grid([init_image, image], rows=1, cols=2)
