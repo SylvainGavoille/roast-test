@@ -21,7 +21,7 @@ original_size = low_res_img.size
 
 # Reduce the image size before processing to save memory, otherwise the model may run out of memory on my machine
 low_res_img_resized = low_res_img.resize(
-    (low_res_img.width//5, low_res_img.height//5), Image.Resampling.LANCZOS
+    (low_res_img.width//4, low_res_img.height//4), Image.Resampling.LANCZOS
 )
 print("Original image size:", original_size)
 # Upscale the image (using the resized low-res image), the more inference steps, the better the quality
