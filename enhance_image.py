@@ -32,7 +32,7 @@ pipeline.unet = torch.compile(pipeline.unet, mode="reduce-overhead", fullgraph=T
 image_path = "./original_image.webp"
 init_image = Image.open(image_path).convert("RGB")
 
-prompt = "With blonde hair, and smiling."
+prompt = "With blonde hair, and smiling. Keep the same face"
 negative_prompt = "ugly, deformed, disfigured, poor details, bad anatomy"
 
 # pass prompt and image to pipeline
