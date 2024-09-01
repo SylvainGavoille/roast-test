@@ -36,7 +36,7 @@ prompt = "With blonde hair, and smiling. Keep the same face."
 negative_prompt = "ugly, deformed, disfigured, poor details, bad anatomy"
 
 # pass prompt and image to pipeline
-image = pipeline(prompt, negative_prompt=negative_prompt, image=init_image, strength=0.01, guidance_scale=1.0).images[0]
+image = pipeline(prompt, negative_prompt=negative_prompt, image=init_image, strength=0.05, guidance_scale=0.8, num_inference_steps=100).images[0]
 
 # Resize the generated image to the enhanced image size so it can be compared
 image_resized = image.resize(
