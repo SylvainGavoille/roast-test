@@ -37,6 +37,11 @@ negative_prompt = "ugly, deformed, disfigured, poor details, bad anatomy"
 
 # pass prompt and image to pipeline
 image = pipeline(prompt, negative_prompt=negative_prompt, image=init_image, strength=0.05, guidance_scale=0.1).images[0]
+
+# Resize the generated image to the enhanced image size so it can be compared
+image_resized = image.resize(
+    (init_image.width, init_image.height), Image.Resampling.LANCZOS
+)
 # Save the upscaled and resized image as a .webp file
-image.save("featured_image.webp", format="WEBP")
+image_resized.save("featured_image.webp", format="WEBP")
 #make_image_grid([init_image, image], rows=1, cols=2)
