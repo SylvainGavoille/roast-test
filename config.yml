@@ -1,0 +1,43 @@
+# config.yml
+
+# Paths for images
+paths:
+  original_image: "data/original_image.webp"
+  upsampled_image: "data/upsampled_image.webp"
+  generated_image_resized: "data/generated_image_resized.webp"
+  featured_image: "data/featured_image.webp"
+  generated_image: "data/generated_image.webp"
+
+# Parameters for image enhancement
+enhance_image:
+#  model_id: "kandinsky-community/kandinsky-2-2-decoder"
+#  model_id: "kandinsky-community/kandinsky-2-1"
+  model_id: "stabilityai/stable-diffusion-xl-base-1.0"
+  prompt: "A very short hairstyle and blond hair"
+  negative_prompt: "ugly, deformed, disfigured, poor details, bad anatomy"
+  strength: 1.0
+  guidance_scale: 10.0
+  num_inference_steps: 500
+  fast: false
+
+# Parameters for quality enhancement
+quality_enhancement:
+  model_id: "CompVis/ldm-super-resolution-4x-openimages"
+  resize_factor: 4
+  num_inference_steps: 300
+  eta: 1
+
+# Interpretation thresholds
+interpretation:
+  paths: 
+    metrics_plot: "data/interpretation.webp"
+  high_consistency:
+    psnr: 30
+    ssim: 0.9
+    fsim: 0.9
+    gmsd: 0.1
+  moderate_consistency:
+    psnr: 20
+    ssim: 0.7
+    fsim: 0.7
+    gmsd: 0.2
