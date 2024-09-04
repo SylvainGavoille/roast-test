@@ -6,9 +6,9 @@
 all: enhance quality check
 
 # Run image enhancement
-enhance:
+inpainting:
 	@echo "Running image enhancement..."
-	python3 src/enhance_image.py
+	python3 src/inpainting.py
 
 # Run quality enhancement
 quality:
@@ -19,3 +19,4 @@ quality:
 check:
 	@echo "Running consistency check..."
 	python3 src/check_consistency.py
+

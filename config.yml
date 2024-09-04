@@ -1,24 +1,33 @@
 # config.yml
 
-# Paths for images
+# Paths for the input and output images, and the RCNN model
 paths:
+  model_path: "../models/pspnet_resnet101_sgd_lr_0.002_epoch_100_test_iou_0.918.pth" # path of the mask rcnn model
   original_image: "data/original_image.webp"
   upsampled_image: "data/upsampled_image.webp"
   generated_image_resized: "data/generated_image_resized.webp"
   featured_image: "data/featured_image.webp"
   generated_image: "data/generated_image.webp"
+  mask_image: "data/mask.png"
+  inpainted_image: "data/inpainted_image.webp"
 
-# Parameters for image enhancement
+# Parameters for PSPNet segmentation
+pspnet:
+  num_classes: 1
+  base_network: 'resnet101'
+  segmentation_threshold: 0.5
+
+# Parameters for inpainting using Stable Diffusion
 enhance_image:
-#  model_id: "kandinsky-community/kandinsky-2-2-decoder"
-#  model_id: "kandinsky-community/kandinsky-2-1"
-  model_id: "stabilityai/stable-diffusion-xl-base-1.0"
-  prompt: "A very short hairstyle and blond hair"
-  negative_prompt: "ugly, deformed, disfigured, poor details, bad anatomy"
-  strength: 1.0
-  guidance_scale: 10.0
-  num_inference_steps: 500
+  model_id: "holwech/realistic-vision-optimized"
+  prompt: "Ivy League Cut, highly detailed, 8k"
+#  prompt: "Sit on a marble bench in a park."
+  strength: 0.5
+  guidance_scale: 20.0
+  num_inference_steps: 200
   fast: false
+  blur_factor: 2
+  generate_hair_mask: true
 
 # Parameters for quality enhancement
 quality_enhancement:
@@ -36,8 +45,10 @@ interpretation:
     ssim: 0.9
     fsim: 0.9
     gmsd: 0.1
+    lpips: 0.1 
   moderate_consistency:
     psnr: 20
     ssim: 0.7
     fsim: 0.7
     gmsd: 0.2
+    lpips: 0.3

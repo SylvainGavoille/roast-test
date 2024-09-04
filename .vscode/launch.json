@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Conda Environment Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",  // This launches the current open Python file
+            "pythonPath": "${command:python.interpreterPath}",  // Dynamically use the selected interpreter
+            "args": [],  // Add any arguments you want to pass to your script
+            "console": "integratedTerminal",
+            "justMyCode": false  // Set to false to allow debugging of third-party libraries
+        }
+    ]
+}

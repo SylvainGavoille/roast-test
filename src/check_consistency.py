@@ -1,6 +1,7 @@
 import cv2
 import torch
 import piq
+import lpips 
 from skimage.metrics import peak_signal_noise_ratio as psnr
 from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
@@ -61,11 +62,16 @@ def compute_metrics(generated_image, upsampled_image):
     gmsd_value = piq.gmsd(generated_image_tensor, upsampled_image_tensor).item()
     logging.info(f"GMSD value: {gmsd_value:.4f}")
 
+    # Compute LPIPS
+    lpips_model = lpips.LPIPS(net='alex')  # LPIPS model (AlexNet backbone)
+    lpips_value = lpips_model(generated_image_tensor, upsampled_image_tensor).item()
+    logging.info(f"LPIPS value: {lpips_value:.4f}")
     return {
         'PSNR': psnr_value,
         'SSIM': ssim_value,
         'FSIM': fsim_value,
-        'GMSD': gmsd_value
+        'GMSD': gmsd_value,
+        'LPIPS': lpips_value
     }
 
 def plot_metrics(metrics, save_path='metrics_plot.webp'):
@@ -106,16 +112,26 @@ def interpret_metrics(metrics, config):
     Returns:
         str: A conclusion string based on the metrics.
     """
-    if (metrics['PSNR'] > config['interpretation']['high_consistency']['psnr'] and
-        metrics['SSIM'] > config['interpretation']['high_consistency']['ssim'] and
-        metrics['FSIM'] > config['interpretation']['high_consistency']['fsim'] and
-        metrics['GMSD'] < config['interpretation']['high_consistency']['gmsd']):
+    high_consistency_thresholds = config['interpretation']['high_consistency']
+    moderate_consistency_thresholds = config['interpretation']['moderate_consistency']
+
+    # Check for high consistency
+    if (metrics['PSNR'] > high_consistency_thresholds['psnr'] and
+        metrics['SSIM'] > high_consistency_thresholds['ssim'] and
+        metrics['FSIM'] > high_consistency_thresholds['fsim'] and
+        metrics['GMSD'] < high_consistency_thresholds['gmsd'] and
+        metrics['LPIPS'] < high_consistency_thresholds['lpips']):  # LPIPS should be low
         return "The images are highly consistent."
-    elif (metrics['PSNR'] > config['interpretation']['moderate_consistency']['psnr'] and
-          metrics['SSIM'] > config['interpretation']['moderate_consistency']['ssim'] and
-          metrics['FSIM'] > config['interpretation']['moderate_consistency']['fsim'] and
-          metrics['GMSD'] < config['interpretation']['moderate_consistency']['gmsd']):
+
+    # Check for moderate consistency
+    elif (metrics['PSNR'] > moderate_consistency_thresholds['psnr'] and
+          metrics['SSIM'] > moderate_consistency_thresholds['ssim'] and
+          metrics['FSIM'] > moderate_consistency_thresholds['fsim'] and
+          metrics['GMSD'] < moderate_consistency_thresholds['gmsd'] and
+          metrics['LPIPS'] < moderate_consistency_thresholds['lpips']):  # LPIPS should be low
         return "The images are moderately consistent."
+
+    # If neither, the images show significant differences
     else:
         return "The images show significant differences."
 
