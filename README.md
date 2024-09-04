@@ -63,7 +63,7 @@ This command checks the consistency of the images, ensuring that there are no an
 **Command:**
 
 ```bash
-make inpainting
+make check
 ```
 
 ### 3. Run Image Enhancement
